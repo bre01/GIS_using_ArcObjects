@@ -95,11 +95,48 @@ namespace hw1
             //Returns the ICommand object used by the Command, Tool or ToolControl item. If the item is using a Menu, an IMultiItem object or Palette Nothing is returned.
             //所以说如果如果在IToolbarItem这个里面的"东西"是一个Tool类的实例，那么读取Command属性，
             //会得到一个Tool类实例（对象），这个Tool实例当然是实现了ICommand的，(神奇吧，Tool是实现了ICommand的)
-            //同时，这个Tool类实例，也是实现了ITool的
-            // 
+            //同时，这个Tool类实例，也是实现了ITool的,
+            // Actually,这个ITool实例就是我们在56行创建的customTool，
+            //如果你按F12，进入ZoomIn的定义，会发现我们生成的ZoomIn base tool，
+            //是继承了BaseTool这个抽象类的，
+            //而如果继续按F12看BaseTool的定义 
+            //可以看到BaseTool实现了接口Itool
+            //同时还继承了BaseCommand,而BaseCommand实现了接口额ICommand
+            //所以这个ZoomIn类，是实现了ITool和ICommand的
+            //如果在文档中搜索Tool class也可以得到佐证
+
+            //至于如何确定读取IToolbarItem.Command属性时，得到的是我们在56行通过ZoomIn类来
+            //得到的CustomTool       " ITool customTool = new ZoomIn();"
+            //可以得到新的对象customTool之后打印其哈希码 
+            //对比调用Command的得到的值的哈希码来确定 这两个对象是完全一样的
+            //这两个打印的代码分别在57行和114行，取消注释之后即可在打开应用和点击mapControl的时候分别弹出
+            //两次的哈希码
             MessageBox.Show(axToolbarControl1.GetItem(1).Command.GetHashCode().ToString());
             if (axToolbarControl1.GetItem(1).Command.Enabled)
             {
+                //这里有一个坑就是Command属性
+                //在这里，调用Command的属性，得到的是一个ZoomIn实例
+                //这个实例
+                //有Selected和Enabled两个属性，
+                //在使用应用时，如果点击一个Tool对应的区域，区域会变暗
+                //这时Command的Enabled属性会被设为True，
+                //   ！！！竟然是Enabled，而不是Selected！！！
+                //这是一个很大的confusion
+
+                                //ZoomIn实例和Command1实例的比较
+
+
+
+                //仅仅继承了BaseCommand类的ToolbarItem和继承了BaseTool
+                //(继承BaseTool即实现了ITool和ICommand,而如果只是继承BaseCommand就只实现了了
+                //ICommand)的ToolbarItem有一个显著区别就是,虽然都能够被添加到ToolbarControl中
+
+                //但是只是继承了BaseCommand的类不能被选中，只能被点击
+
+                //这个项目中的第一二个是Tool，而第三个是Command，
+
+                
+
                 /*if (e.button == 1)
                 {
                     axMapControl1.Extent = axMapControl1.TrackRectangle();
