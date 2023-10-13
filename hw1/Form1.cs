@@ -50,9 +50,14 @@ namespace hw1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //创建一个新的实现ITool的类
+            //通过add item，然后选择Base Tool
 
             ITool customTool = new ZoomIn();
-            axToolbarControl1.AddItem(new ZoomIn());
+            MessageBox.Show(customTool.GetHashCode().ToString());
+            axToolbarControl1.AddItem(customTool);
+            //还创建了一个base command用来比较command和tool的不同
+
             axToolbarControl1.AddItem(new Command1());
         }
         /*
@@ -80,6 +85,19 @@ namespace hw1
         */
         private void axMapControl1_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IMapControlEvents2_OnMouseDownEvent e)
         {
+            //首先通过GetItem来获得第二个Item，第一个是通过右击属性来手动添加的Zoom in Tool
+            //第二个即Add Item添加到Tool
+            //GetItem（）返回一个实现了IToobarItem的对象
+            //IToolbarItem有成员属性Command 
+            //这是一个只读属性，当尝试获取IToolbarItem.Command时，会获得一个对象，这个对象实现了ICommand接口
+            //这里文档的描述是
+            //IToolbarItem.Command Property:
+            //Returns the ICommand object used by the Command, Tool or ToolControl item. If the item is using a Menu, an IMultiItem object or Palette Nothing is returned.
+            //所以说如果如果在IToolbarItem这个里面的"东西"是一个Tool类的实例，那么读取Command属性，
+            //会得到一个Tool类实例（对象），这个Tool实例当然是实现了ICommand的，(神奇吧，Tool是实现了ICommand的)
+            //同时，这个Tool类实例，也是实现了ITool的
+            // 
+            MessageBox.Show(axToolbarControl1.GetItem(1).Command.GetHashCode().ToString());
             if (axToolbarControl1.GetItem(1).Command.Enabled)
             {
                 /*if (e.button == 1)
