@@ -121,6 +121,9 @@ namespace ex2
         public override void OnClick()
         {
             // TODO: Add RemoveLayer.OnClick implementation
+            //可以使用customproperty来直接传递图层的index，然后直接用index即可修改图层
+            //但是因为在命令被点击之前并不知道是要zoom layer还是remove layer，所以不知道到底往custompropery里面放图层还是图层index
+            //这里就只能比较传入进来的图层和mapcontrol里面的那个图层匹配，然后就删除对应图层
             int i = 0;
             int count=_mapControl.LayerCount;
             ILayer layer = (ILayer)_mapControl.CustomProperty;
@@ -130,6 +133,8 @@ namespace ex2
                 {
                     _mapControl.DeleteLayer(i);
                     break;
+                    //如果不break的话
+                    //因为count还是被删除之前的count，所以会循环到不存在的图层导致下标越界 index out of range
                 }
                 i++;
 

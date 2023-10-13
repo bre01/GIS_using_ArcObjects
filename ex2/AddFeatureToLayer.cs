@@ -2,19 +2,21 @@ using ESRI.ArcGIS.ADF.BaseClasses;
 using ESRI.ArcGIS.ADF.CATIDs;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.Geodatabase;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace ex2
 {
     /// <summary>
-    /// Summary description for ZoomToLayer.
+    /// Summary description for AddFeatureToLayer.
     /// </summary>
-    [Guid("075c6506-cb4c-44b2-ac4d-978eb604091b")]
+    [Guid("db209952-2561-418d-803e-e652b2dbbf27")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("ex2.ZoomToLayer")]
-    public sealed class ZoomToLayer : BaseCommand
+    [ProgId("ex2.AddFeatureToLayer")]
+    public sealed class AddFeatureToLayer : BaseCommand
     {
         #region COM Registration Function(s)
         [ComRegisterFunction()]
@@ -65,23 +67,21 @@ namespace ex2
 
         #endregion
         #endregion
-        
-        private IHookHelper m_hookHelper;
 
+        private IHookHelper m_hookHelper;
         private IMapControl3 _mapControl;
 
-        public ZoomToLayer()
+        public AddFeatureToLayer()
         {
             //
             // TODO: Define values for the public properties
             //
             base.m_category = ""; //localizable text
-            base.m_caption = "";  //localizable text
+            base.m_caption = "add feature";  //localizable text
             base.m_message = "";  //localizable text 
             base.m_toolTip = "";  //localizable text 
             base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyCommand")
-            base.m_caption = "Zoom to layer";//右键的时候会显示的命令标题
-            
+
             try
             {
                 //
@@ -104,28 +104,14 @@ namespace ex2
         /// <param name="hook">Instance of the application</param>
         public override void OnCreate(object hook)
         {
-           // The OnCreate method gives the command a hook into the application.
-
-            //When implementing ICommand to create a custom command, use the OnCreate method to get a hook to the application.
-
-            //override这个oncreate方法，在Command被创建的时候这个OnCreate会被调用
-            //这个command命令会让这个命令挂一个Hook（钩子)到应用中（在这里就是Form1），
-            //通过这个钩子可以获得应用中的对象
-
             _mapControl = (IMapControl3)hook;
-            //就是通过这个
-            // _TocRightClick.SetHook(_passMapControl);
-            //来讲应用中的_passMapControl传递到命令中的，
-            //同时_passMapControl有一个属性，CustomtyProperty，
-            //通过这个属性的，将其cast成想要的类型，就可以得到选定的图层
-
-            /*if (hook == null)
+            if (hook == null)
                 return;
 
             if (m_hookHelper == null)
                 m_hookHelper = new HookHelperClass();
 
-            m_hookHelper.Hook = hook;*/
+            m_hookHelper.Hook = hook;
 
             // TODO:  Add other initialization code
         }
@@ -135,14 +121,77 @@ namespace ex2
         /// </summary>
         public override void OnClick()
         {
-            //通过cast得到选定的图层
             ILayer layer = (ILayer)_mapControl.CustomProperty;
-            //将整个mapcontrol的范围设定为某个图层的AreaOfInterest
-            //即可实现Zoom to layer的效果
-            _mapControl.Extent = layer.AreaOfInterest;
-            // TODO: Add ZoomToLayer.OnClick implementation
+            var od = new OpenFileDialog();
+            if(od.ShowDialog()==DialogResult.OK)
+            {
+                AddFeaturesToExistingLayer(_mapControl, layer,od.FileName);
+
+            }
+            // TODO: Add AddFeatureToLayer.OnClick implementation
         }
 
-        #endregion
+        #endregion 
+        public void AddFeaturesToExistingLayer(IMapControl3 mapControl,ILayer addToLayer,string shapefilePath)
+        {
+            // Get the feature layer you want to add features to.
+            IFeatureLayer featureLayer = null;
+
+            for (int i = 0; i < mapControl.LayerCount; i++)
+            {
+                var layer = mapControl.get_Layer(i);
+                if (layer is IFeatureLayer && layer==addToLayer)
+                {
+                    featureLayer = (IFeatureLayer)layer;
+                    break;
+                }
+            }
+
+            if (featureLayer == null)
+            {
+                // Handle the case where the layer with the specified name is not found.
+                return;
+            }
+
+            // Open an edit session.
+            IWorkspaceEdit workspaceEdit = ((IDataset)featureLayer.FeatureClass).Workspace as IWorkspaceEdit;
+            workspaceEdit.StartEditing(true);
+            workspaceEdit.StartEditOperation();
+
+            try
+            {
+                // Create a feature cursor for inserting features.
+                IFeatureCursor featureCursor = featureLayer.FeatureClass.Insert(true);
+                IFeatureBuffer featureBuffer = featureLayer.FeatureClass.CreateFeatureBuffer();
+
+                // Iterate through your shapefile and add features to the feature class.
+                // You will need to open and read your shapefile to get the feature geometries and attributes.
+
+                // Example:
+                // IFeature feature = ... // Create a new feature with the appropriate geometry and attributes.
+                // featureBuffer.Shape = feature.Shape; // Set the geometry of the feature buffer.
+                // featureBuffer.set_Value(index, value); // Set attribute values.
+
+                // Insert the feature into the feature class.
+                featureCursor.InsertFeature(featureBuffer);
+                featureCursor.Flush();
+
+                // Commit the edit operation and stop the edit session.
+                workspaceEdit.StopEditOperation();
+                workspaceEdit.StopEditing(true);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that may occur during the editing process.
+                // Roll back the edit operation if necessary.
+                workspaceEdit.AbortEditOperation();
+                workspaceEdit.StopEditing(false);
+            }
+
+            // Refresh the view to display the added features.
+            mapControl.Refresh();
+            MessageBox.Show("done");
+        }
+
     }
 }
