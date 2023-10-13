@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="GetItem() return a object that Implement IToolbarItem&#xD;&#xA;">
+    <Position X="3.194" Y="0.563" Height="0.75" Width="1.7" />
+  </Comment>
+  <Interface Name="hw1.IToolbarItem">
+    <Position X="2.5" Y="1.75" Width="1.5" />
+    <AssociationLine Name="Command" Type="hw1.ICommand" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.5" Y="1.938" />
+        <Point X="2.062" Y="1.938" />
+        <Point X="2.062" Y="3" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Demo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Command" />
+    </ShowAsAssociation>
+  </Interface>
+  <Interface Name="hw1.IToolbarControl">
+    <Position X="5.5" Y="0.5" Width="3" />
+    <AssociationLine Name="IToolbarItem" Type="hw1.IToolbarItem" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="1.375" />
+        <Point X="3.25" Y="1.375" />
+        <Point X="3.25" Y="1.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Demo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="IToolbarItem" />
+    </ShowAsAssociation>
+  </Interface>
+  <Interface Name="hw1.ICommand">
+    <Position X="1.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Demo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
