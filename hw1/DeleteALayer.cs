@@ -10,12 +10,12 @@ using System.Windows.Forms;
 namespace hw1
 {
     /// <summary>
-    /// Summary description for ZoomIn.
+    /// Summary description for DeleteALayer.
     /// </summary>
-    [Guid("4ff0770c-8bbf-43d2-a812-8fbedc3681d7")]
+    [Guid("731fa1dd-f8b2-4456-92e8-437d6a3216c2")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("hw1.ZoomIn")]
-    public sealed class ZoomIn : BaseTool
+    [ProgId("hw1.DeleteALayer")]
+    public sealed class DeleteALayer : BaseTool
     {
         #region COM Registration Function(s)
         [ComRegisterFunction()]
@@ -66,19 +66,16 @@ namespace hw1
 
         #endregion
         #endregion
-
-        private IHookHelper m_hookHelper;
-        private IMapControl3 _mapControl;
         private IMap _map;
-        private IPageLayout _pageLayout;
+        private IHookHelper m_hookHelper;
 
-        public ZoomIn()
+        public DeleteALayer()
         {
             //
             // TODO: Define values for the public properties
             //
             base.m_category = ""; //localizable text 
-            base.m_caption = "Zoom In";  //localizable text 
+            base.m_caption = "";  //localizable text 
             base.m_message = "";  //localizable text
             base.m_toolTip = "";  //localizable text
             base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyTool")
@@ -109,9 +106,8 @@ namespace hw1
                 m_hookHelper = new HookHelperClass();
 
             m_hookHelper.Hook = hook;
-            var map=m_hookHelper.FocusMap;
-            MessageBox.Show(map.ToString()) ;
-            // TODO:  Add ZoomIn.OnCreate implementation
+            _map = m_hookHelper.FocusMap;
+            // TODO:  Add DeleteALayer.OnCreate implementation
         }
 
         /// <summary>
@@ -119,19 +115,27 @@ namespace hw1
         /// </summary>
         public override void OnClick()
         {
-            // TODO: Add ZoomIn.OnClick implementation
-            
+            // TODO: Add DeleteALayer.OnClick implementation
         }
 
+        public override void OnMouseDown(int Button, int Shift, int X, int Y)
+        {
+            // TODO:  Add DeleteALayer.OnMouseDown implementation
+            if (_map.Layer[0]!=null)
+            {
+                _map.DeleteLayer(_map.Layer[0]);
+
+            }
+        }
 
         public override void OnMouseMove(int Button, int Shift, int X, int Y)
         {
-            // TODO:  Add ZoomIn.OnMouseMove implementation
+            // TODO:  Add DeleteALayer.OnMouseMove implementation
         }
 
         public override void OnMouseUp(int Button, int Shift, int X, int Y)
         {
-            // TODO:  Add ZoomIn.OnMouseUp implementation
+            // TODO:  Add DeleteALayer.OnMouseUp implementation
         }
         #endregion
     }

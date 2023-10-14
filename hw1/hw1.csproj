@@ -81,8 +81,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClearLayers.cs" />
     <Compile Include="Command1.cs" />
+    <Compile Include="DeleteALayer.cs" />
     <Compile Include="Demo.cs" />
+    <Compile Include="DemoInterface.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +129,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ZoomIn.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ClearLayer.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DeleteALayer.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DeleteALayer.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,17 +5,16 @@ using ESRI.ArcGIS.Controls;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace hw1
 {
     /// <summary>
-    /// Summary description for ZoomIn.
+    /// Summary description for ClearLayer.
     /// </summary>
-    [Guid("4ff0770c-8bbf-43d2-a812-8fbedc3681d7")]
+    [Guid("58f9fe9e-14e2-47de-88f3-a092d931cc7f")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("hw1.ZoomIn")]
-    public sealed class ZoomIn : BaseTool
+    [ProgId("hw1.ClearLayer")]
+    public sealed class ClearLayers : BaseCommand
     {
         #region COM Registration Function(s)
         [ComRegisterFunction()]
@@ -68,28 +67,26 @@ namespace hw1
         #endregion
 
         private IHookHelper m_hookHelper;
-        private IMapControl3 _mapControl;
         private IMap _map;
-        private IPageLayout _pageLayout;
 
-        public ZoomIn()
+        public ClearLayers()
         {
             //
             // TODO: Define values for the public properties
             //
-            base.m_category = ""; //localizable text 
-            base.m_caption = "Zoom In";  //localizable text 
-            base.m_message = "";  //localizable text
-            base.m_toolTip = "";  //localizable text
-            base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyTool")
+            base.m_category = ""; //localizable text
+            base.m_caption = "";  //localizable text
+            base.m_message = "";  //localizable text 
+            base.m_toolTip = "";  //localizable text 
+            base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyCommand")
+
             try
             {
                 //
-                // TODO: change resource name if necessary
+                // TODO: change bitmap name if necessary
                 //
                 string bitmapResourceName = GetType().Name + ".bmp";
                 base.m_bitmap = new Bitmap(GetType(), bitmapResourceName);
-                base.m_cursor = new System.Windows.Forms.Cursor(GetType(), GetType().Name + ".cur");
             }
             catch (Exception ex)
             {
@@ -100,39 +97,32 @@ namespace hw1
         #region Overridden Class Methods
 
         /// <summary>
-        /// Occurs when this tool is created
+        /// Occurs when this command is created
         /// </summary>
         /// <param name="hook">Instance of the application</param>
         public override void OnCreate(object hook)
         {
+            if (hook == null)
+                return;
+
             if (m_hookHelper == null)
                 m_hookHelper = new HookHelperClass();
 
             m_hookHelper.Hook = hook;
-            var map=m_hookHelper.FocusMap;
-            MessageBox.Show(map.ToString()) ;
-            // TODO:  Add ZoomIn.OnCreate implementation
+            _map = m_hookHelper.FocusMap;
+            // TODO:  Add other initialization code
         }
 
         /// <summary>
-        /// Occurs when this tool is clicked
+        /// Occurs when this command is clicked
         /// </summary>
         public override void OnClick()
         {
-            // TODO: Add ZoomIn.OnClick implementation
-            
+            _map.ClearLayers();
+
+            // TODO: Add ClearLayer.OnClick implementation
         }
 
-
-        public override void OnMouseMove(int Button, int Shift, int X, int Y)
-        {
-            // TODO:  Add ZoomIn.OnMouseMove implementation
-        }
-
-        public override void OnMouseUp(int Button, int Shift, int X, int Y)
-        {
-            // TODO:  Add ZoomIn.OnMouseUp implementation
-        }
         #endregion
     }
 }

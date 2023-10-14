@@ -15,11 +15,11 @@ namespace hw1
 {
     public partial class Form1 : Form
     {
+        IMapControl3 _mapControl; 
         public Form1()
         {
             ESRI.ArcGIS.RuntimeManager.Bind(ESRI.ArcGIS.ProductCode.Desktop);
             InitializeComponent();
-            
         }
 
         private void cmdLoadshpf_Click(object sender, EventArgs e)
@@ -37,7 +37,7 @@ namespace hw1
                 //the axMapControls is created by draging mapControl to form
                 //in form designer
                 axMapControl1.AddShapeFile(System.IO.Path.GetDirectoryName(fileName), System.IO.Path.GetFileName(fileName));
-
+                 
 
 
             }
@@ -54,11 +54,13 @@ namespace hw1
             //通过add item，然后选择Base Tool
 
             ITool customTool = new ZoomIn();
-            MessageBox.Show(customTool.GetHashCode().ToString());
             axToolbarControl1.AddItem(customTool);
             //还创建了一个base command用来比较command和tool的不同
-
             axToolbarControl1.AddItem(new Command1());
+            axToolbarControl1.AddItem(new DeleteALayer());
+            axToolbarControl1.AddItem(new ClearLayers());
+            
+            
         }
         /*
         private void mapControl_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IMapControlEvents2_OnMouseDownEvent e)
@@ -111,16 +113,18 @@ namespace hw1
             //对比调用Command的得到的值的哈希码来确定 这两个对象是完全一样的
             //这两个打印的代码分别在57行和114行，取消注释之后即可在打开应用和点击mapControl的时候分别弹出
             //两次的哈希码
-            MessageBox.Show(axToolbarControl1.GetItem(1).Command.GetHashCode().ToString());
-            if (axToolbarControl1.GetItem(1).Command.Enabled)
+            if (axToolbarControl1.CurrentTool == axToolbarControl1.GetItem(1).Command) 
             {
+        
+
                 //这里有一个坑就是Command属性
                 //在这里，调用Command的属性，得到的是一个ZoomIn实例
                 //这个实例
                 //有Selected和Enabled两个属性，
                 //在使用应用时，如果点击一个Tool对应的区域，区域会变暗
-                //这时Command的Enabled属性会被设为True，
-                //   ！！！竟然是Enabled，而不是Selected！！！
+                //但是Selected和Enabled这两个属性无论如何都不会变
+                //只能通过比较CurrentTool和GetItem（1）来确定有没有选中
+
                 //这是一个很大的confusion
 
                                 //ZoomIn实例和Command1实例的比较
